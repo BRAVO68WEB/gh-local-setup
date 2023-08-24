@@ -1,0 +1,284 @@
+#!/usr/bin/env bash
+set -e
+
+repo_name="$1"
+
+if [ -z "$repo_name" ]; then
+  echo "Usage: $0 <repo_name>"
+  exit 1
+fi
+
+# Clone the repo
+gh repo clone $repo_name
+
+# Parsing the repo name
+repo_name=$(echo $repo_name | sed 's/.*github.com\///g') # Remove everything before github.com
+repo_name=$(echo $repo_name | sed 's/\.git//g') # Remove .git if present
+repo_name=$(echo $repo_name | sed 's/.*\///g') # Remove everything before the last slash
+
+echo "🚀 Setting up $repo_name 🚀"
+
+# Change into the repo directory
+cd $repo_name
+
+# Check if repo has a makefile
+if [ -f Makefile ]; then
+    echo "📜 Makefile Detected 📜"
+
+    # Check if make is installed
+    if ! command -v make &> /dev/null
+    then
+        echo "🚨 Make is not installed 🚨"
+        echo "❌ Please install make and try again ❌"
+    fi
+
+    echo "🤷‍♀️ Checking if Makefile has a setup command 🤷‍♀️"
+
+    # Check if Makefile has a setup command
+    if grep -q "setup" Makefile; then
+        echo "👍 Makefile has a setup command 👍"
+        make setup
+    else
+        echo "👎 Makefile does not have a setup command 👎"
+    fi
+
+    echo "🤷‍♀️ Checking if Makefile has a install command 🤷‍♀️"
+
+    # Check if Makefile has a install command
+    if grep -q "install" Makefile; then
+        echo "👍 Makefile has a install command 👍"
+        make install
+    else
+        echo "👎 Makefile does not have a install command 👎"
+    fi
+fi
+
+# Check if repo has a package.json file
+if [ -f package.json ]; then
+    # Install dependencies
+    echo "✨ Node Project Detected ✨"
+
+    # Check if yarn.lock exists
+    if [ -f yarn.lock ]; then
+        echo "🧶 Installing dependencies with yarn 🧶"
+        
+        # Check if yarn is installed
+        if ! command -v yarn &> /dev/null
+        then
+            echo "🚨 Yarn is not installed 🚨"
+            echo "❌ Please install yarn and try again ❌"
+        fi
+
+        yarn
+    elif [ -f pnpm-lock.yaml ]; then
+        echo "📦 Installing dependencies with pnpm 📦"
+        
+        # Check if npm is installed
+        if ! command -v pnpm &> /dev/null
+        then
+            echo "🚨 pnpm is not installed 🚨"
+            echo "❌ Please install pnpm and try again ❌"
+        fi
+
+        pnpm install
+    else
+        echo "📦 Installing dependencies with npm 📦"
+
+        # Check if npm is installed
+        if ! command -v npm &> /dev/null
+        then
+            echo "🚨 npm is not installed 🚨"
+            echo "❌ Please install npm and try again ❌"
+        fi
+
+        npm install
+    fi
+fi
+
+# Check if the project has a go.mod file
+if [ -f go.mod ]; then
+    echo "🐹 Go Project Detected 🐹"
+
+    # Check if go is installed
+    if ! command -v go &> /dev/null
+    then
+        echo "🚨 Go is not installed 🚨"
+        echo "❌ Please install go and try again ❌"
+    fi
+
+    go mod download
+fi
+
+# Check if the project has a Gemfile file
+if [ -f Gemfile ]; then
+    echo "💎 Ruby Project Detected 💎"
+
+    # Check if ruby is installed
+    if ! command -v ruby &> /dev/null
+    then
+        echo "🚨 Ruby is not installed 🚨"
+        echo "❌ Please install ruby and try again ❌"
+    fi
+
+    if ! command -v bundle &> /dev/null
+    then
+        echo "🚨 bundle is not installed 🚨"
+        echo "❌ Please install bundle and try again ❌"
+    fi
+
+    bundle install
+fi
+
+# Check if the project has a requirements.txt or setup.py file
+if [ -f requirements.txt ]; then
+    echo "🐍 Python Project Detected 🐍"
+
+    # Check if python is installed
+    if ! command -v python &> /dev/null
+    then
+        echo "🚨 Python is not installed 🚨"
+        echo "❌ Please install python and try again ❌"
+    fi
+
+    if ! command -v pip &> /dev/null
+    then
+        echo "🚨 pip is not installed 🚨"
+        echo "❌ Please install pip and try again ❌"
+    fi
+    
+    # Check if the project has a setup.py file
+    if [ -f setup.py ]; then
+        pip install -e .
+    else
+        pip install -r requirements.txt
+    fi
+fi
+
+# Check if the project has a composer.json file
+if [ -f composer.json ]; then
+    echo "🎼 PHP Project Detected 🎼"
+
+    # Check if php is installed
+    if ! command -v php &> /dev/null
+    then
+        echo "🚨 PHP is not installed 🚨"
+        echo "❌ Please install php and try again ❌"
+    fi
+
+    if ! command -v composer &> /dev/null
+    then
+        echo "🚨 composer is not installed 🚨"
+        echo "❌ Please install composer and try again ❌"
+    fi
+
+    composer install
+fi
+
+# Check if the project has a mix.exs file
+if [ -f mix.exs ]; then
+    echo "🔮 Elixir Project Detected 🔮"
+
+    # Check if elixir is installed
+    if ! command -v elixir &> /dev/null
+    then
+        echo "🚨 Elixir is not installed 🚨"
+        echo "❌ Please install elixir and try again ❌"
+    fi
+
+    if ! command -v mix &> /dev/null
+    then
+        echo "🚨 mix is not installed 🚨"
+        echo "❌ Please install mix and try again ❌"
+    fi
+
+    mix deps.get
+fi
+
+# Check if the project has a pom.xml file
+if [ -f pom.xml ]; then
+    echo "☕️ Java Project Detected ☕️"
+
+    # Check if java is installed
+    if ! command -v java &> /dev/null
+    then
+        echo "🚨 Java is not installed 🚨"
+        echo "❌ Please install java and try again ❌"
+    fi
+
+    if ! command -v mvn &> /dev/null
+    then
+        echo "🚨 mvn is not installed 🚨"
+        echo "❌ Please install mvn and try again ❌"
+    fi
+
+    mvn install
+fi
+
+# Check if the project has a build.gradle file
+if [ -f build.gradle ]; then
+    echo "📦 Gradle Project Detected 📦"
+
+    # Check if gradle is installed
+    if ! command -v gradle &> /dev/null
+    then
+        echo "🚨 Gradle is not installed 🚨"
+        echo "❌ Please install gradle and try again ❌"
+    fi
+
+    if ! command -v gradle &> /dev/null
+    then
+        echo "🚨 gradle is not installed 🚨"
+        echo "❌ Please install gradle and try again ❌"
+    fi
+
+    gradle build
+fi
+
+# Check if the project has a cargo.toml file
+if [ -f cargo.toml ]; then
+    echo "🦀 Rust Project Detected 🦀"
+
+    # Check if rust is installed
+    if ! command -v rustc &> /dev/null
+    then
+        echo "🚨 Rust is not installed 🚨"
+        echo "❌ Please install rust and try again ❌"
+    fi
+
+    if ! command -v cargo &> /dev/null
+    then
+        echo "🚨 cargo is not installed 🚨"
+        echo "❌ Please install cargo and try again ❌"
+    fi
+
+    cargo build
+fi
+
+# Print success message
+echo "✅ Setup Done! ✅"
+
+# Check if 'code' or 'code-insiders' is installed
+if ! command -v code &> /dev/null
+then
+    if ! command -v code-insiders &> /dev/null
+    then
+        echo "🚨 VSCode/VSCode Insiders is not installed 🚨"
+        echo "❌ Please install VSCode and try again ❌"
+    fi
+fi
+
+# Ask user if they want to open the project in VSCode or VSCode Insiders
+read -p "👀 Do you want to open the project in VSCode or VSCode Insiders? (y/n) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    # Check if 'code' is installed
+    if command -v code &> /dev/null
+    then
+        code .
+    else
+        code-insiders .
+    fi
+fi
+
+echo "🎉 Happy Coding! 🎉"
