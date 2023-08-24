@@ -34,4 +34,4 @@ Give a ⭐️ if this project helped you!
 
 ## License 📝
 
-This project is [MIT]()
+This project is [MIT](LICENSE.md)
