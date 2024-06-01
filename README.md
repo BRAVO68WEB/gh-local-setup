@@ -6,6 +6,24 @@ This repository contains a set of scripts to help you setup your local environme
 
 ## Usage 🙌
 
+### Enviornment
+
+- Linux
+
+### Languages/Frameworks Supported
+
+- Nodejs (npm/pnpm/yarn)
+- Bun
+- Rust
+- Go
+- Make
+- Elixer
+- Ruby
+- Java (maven)
+- PHP (composer)
+- Python (requirement.txt)
+- Gradle
+
 ### Prerequisites
 
 - [gh](https://cli.github.com/) - GitHub CLI

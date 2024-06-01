@@ -70,6 +70,17 @@ if [ -f package.json ]; then
         fi
 
         yarn
+    elif [ -f bun.lockb ]; then
+        echo "📦 Installing dependencies with bun 📦"
+        
+        # Check if npm is installed
+        if ! command -v bun &> /dev/null
+        then
+            echo "🚨 bun is not installed 🚨"
+            echo "❌ Please install bun and try again ❌"
+        fi
+
+        bun
     elif [ -f pnpm-lock.yaml ]; then
         echo "📦 Installing dependencies with pnpm 📦"
         
