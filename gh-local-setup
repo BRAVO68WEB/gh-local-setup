@@ -80,7 +80,7 @@ if [ -f package.json ]; then
             echo "❌ Please install bun and try again ❌"
         fi
 
-        bun
+        bun install
     elif [ -f pnpm-lock.yaml ]; then
         echo "📦 Installing dependencies with pnpm 📦"
         
